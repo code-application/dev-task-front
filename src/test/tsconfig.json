@@ -1,14 +1,21 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["./**/*"],
+  "include": ["./**/*", "../**/*"],
   "compilerOptions": {
     "jsx": "react-jsx",
     "module": "esnext",
     "moduleResolution": "bundler",
-    "baseUrl": "./",
+    "baseUrl": "../../",
+    "plugins": [
+      {
+        "name": "next",
+        "@/*": ["./src/*"]
+      }
+    ],
     "paths": {
       "@/components/*": ["components/*"],
-      "@/libs/*": ["libs/*"]
+      "@/libs/*": ["libs/*"],
+      "@/*": ["./src/*"]
     }
   }
 }

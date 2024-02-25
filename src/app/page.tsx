@@ -1,7 +1,11 @@
+import HelloWorld from "@/components/helloWorld";
+
 export default function Home() {
   return (
     <div>
-      <h1>Hello, world.</h1>
+      <h1>
+        <HelloWorld />
+      </h1>
     </div>
   );
 }
