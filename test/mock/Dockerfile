@@ -1,7 +1,7 @@
 FROM node:18
 
 WORKDIR /mock
-COPY .:/mock
+COPY . /mock
 
 RUN npm install
 
