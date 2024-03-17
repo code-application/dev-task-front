@@ -7,4 +7,9 @@ router.get("/", (req, res) => {
   console.debug("Received a request for /.");
 });
 
+router.get("/healthz", (req, res) => {
+  res.status(200);
+  res.send("OK");
+});
+
 export { router as helloWorldRouter };

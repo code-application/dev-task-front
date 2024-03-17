@@ -48,6 +48,11 @@ jobs:
         image: ghcr.io/code-application/dev-task-front-mock:v0.0.1
         ports:
           - 3001:3001
+        options: >-
+          --health-cmd "curl http://localhost:3001/healthz || exit 1"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
   Deploy-Preview:
     needs: [Build-Mock, Test]
     runs-on: ubuntu-latest
