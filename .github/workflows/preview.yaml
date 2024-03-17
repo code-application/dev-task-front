@@ -45,7 +45,7 @@ jobs:
       - run: npm run jest
     services:
       mock:
-        image: ${{ env.REGISTRY }}/${{ env.MOCK_IMAGE_NAME }}:v0.0.1
+        image: ghcr.io/code-application/dev-task-front-mock:v0.0.1
         ports:
           - 3001:3001
   Deploy-Preview:
