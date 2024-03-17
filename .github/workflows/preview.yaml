@@ -6,7 +6,34 @@ on:
   push:
     branches-ignore:
       - main
+
+env:
+  REGISTRY: ghcr.io
+  MOCK_IMAGE_NAME: ${{ github.repository }}-mock
+
 jobs:
+  Build-Mock:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: ./test/mock/
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.MOCK_IMAGE_NAME }}:v0.0.1
+
   Test:
     runs-on: ubuntu-latest
     steps:
@@ -16,8 +43,17 @@ jobs:
         with:
           node-version: "18.x"
       - run: npm install
-      - run: npm run install:mock
-      - run: npm test
+      - run: npm run jest
+    services:
+      mock:
+        image: node:18
+        ports:
+          - 3001:3001
+        volumes:
+          - ./test/mock:/mock
+          - ./test/mock/command.sh:/command.sh
+        options: >-
+          --entrypoint /command.sh
   Deploy-Preview:
     needs: Test
     runs-on: ubuntu-latest
