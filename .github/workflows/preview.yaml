@@ -33,6 +33,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.MOCK_IMAGE_NAME }}:v0.0.1
 
   Test:
+    needs: Build-Mock
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -44,16 +45,11 @@ jobs:
       - run: npm run jest
     services:
       mock:
-        image: node:18
+        image: ${{ env.REGISTRY }}/${{ env.MOCK_IMAGE_NAME }}:v0.0.1
         ports:
           - 3001:3001
-        volumes:
-          - ./test/mock:/mock
-          - ./test/mock/command.sh:/command.sh
-        options: >-
-          --entrypoint /command.sh
   Deploy-Preview:
-    needs: Test
+    needs: [Build-Mock, Test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
