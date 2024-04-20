@@ -2,12 +2,59 @@ name: Vercel Preview Deployment
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+  REGISTRY: ghcr.io
+  MOCK_IMAGE_NAME: ${{ github.repository }}-mock
 on:
   push:
     branches-ignore:
       - main
+
 jobs:
+  Build-Mock:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: ./test/mock/
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.MOCK_IMAGE_NAME }}:v0.0.1
+
+  Test:
+    needs: Build-Mock
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18.x"
+      - run: npm install
+      - run: npm run jest
+    services:
+      mock:
+        image: ghcr.io/code-application/dev-task-front-mock:v0.0.1
+        ports:
+          - 3001:3001
+        options: >-
+          --health-cmd "curl http://localhost:3001/healthz || exit 1"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
   Deploy-Preview:
+    needs: [Build-Mock, Test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
