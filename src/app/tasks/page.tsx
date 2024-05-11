@@ -1,25 +1,33 @@
-export default function TaskList() {
-  // FIXME: APIから値を取得するように直す
-  const id = "dummy-uuid";
-  const taskTitle = "タイトル1";
-  const taskDescription = "説明1";
-  const createdAt = "2021-01-01T00:00:00.000Z";
-  const updatedAt = "2021-01-01T00:00:00.000Z";
+const fetchTaskList = async () => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/tasks`,
+    // このオプションを付けないとサーバー側のデータ更新が反映されない
+    { cache: "no-cache" }
+  );
+  if (!response.ok) {
+    throw new Error("タスクの一覧取得に失敗しました");
+  }
+
+  return response.json();
+};
+
+export default async function TaskList() {
+  const taskList = await fetchTaskList();
 
   return (
     <div>
-      {Array.from({ length: 3 }).map((_, index) => {
+      {taskList.map((task, index) => {
         return (
           <div
             className="card w-96 bg-base-100 shadow-xl"
             key={"task-" + index}
           >
             <div className="card-body">
-              <p>{id}</p>
-              <h2 className="card-title">{taskTitle}</h2>
-              <p>{taskDescription}</p>
-              <p>{createdAt}</p>
-              <p>{updatedAt}</p>
+              <p>id: {task.id}</p>
+              <h2 className="card-title">{task.title}</h2>
+              <p>{task.description}</p>
+              <p>作成日: {task.createdAt}</p>
+              <p>更新日: {task.updatedAt}</p>
             </div>
           </div>
         );
