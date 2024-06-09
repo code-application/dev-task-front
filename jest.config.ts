@@ -12,8 +12,16 @@ const createJestConfig = nextJest({
 const config: Config = {
   coverageProvider: "v8",
   testEnvironment: "./FixJSDOMEnvironment.ts",
+  // 公式ドキュメントに従ってパッチ
+  // ref: https://mswjs.io/docs/migrations/1.x-to-2.x#requestresponsetextencoder-is-not-defined-jest
+  setupFiles: ["<rootDir>/jest.polyfills.js"],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   // Add more setup options before each test is run
+  // 公式ドキュメントに従ってパッチ
+  // ref: https://mswjs.io/docs/migrations/1.x-to-2.x#cannot-find-module-mswnode-jsdom
+  testEnvironmentOptions: {
+    customExportConditions: [""],
+  },
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

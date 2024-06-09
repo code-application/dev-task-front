@@ -1,0 +1,26 @@
+{
+  "recommendations": [
+    "github.vscode-github-actions",
+    "aaron-bond.better-comments",
+    "formulahendry.auto-rename-tag",
+    "nucllear.vscode-extension-auto-import",
+    "steoates.autoimport",
+    "ms-vscode-remote.remote-containers",
+    "ms-azuretools.vscode-docker",
+    "dsznajder.es7-react-js-snippets",
+    "mhutchie.git-graph",
+    "george-alisson.html-preview-vscode",
+    "visualstudioexptteam.vscodeintellicode",
+    "visualstudioexptteam.intellicode-api-usage-examples",
+    "ms-ceintl.vscode-language-pack-ja",
+    "xabikos.javascriptsnippets",
+    "ms-vscode.vscode-typescript-next",
+    "ms-vsliveshare.vsliveshare",
+    "yzhang.markdown-all-in-one",
+    "shd101wyy.markdown-preview-enhanced",
+    "burkeholland.simple-react-snippets",
+    "wayou.vscode-todo-highlight",
+    "shardulm94.trailing-spaces",
+    "davidanson.vscode-markdownlint"
+  ]
+}
