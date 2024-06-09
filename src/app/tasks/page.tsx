@@ -1,5 +1,8 @@
+"use client";
+
 import Task from "@/models/task";
 import { UUID } from "crypto";
+import { useEffect, useState } from "react";
 
 /**
  * タスク一覧APIのレスポンス。
@@ -11,6 +14,11 @@ interface TaskResponseEntity {
   description: string;
 }
 
+/**
+ * タスク一覧を取得する。
+ *
+ * @returns タスク一覧
+ */
 const fetchTaskList = async (): Promise<Task[]> => {
   const response: Response = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/tasks`,
@@ -32,16 +40,26 @@ const fetchTaskList = async (): Promise<Task[]> => {
   });
 };
 
-export default async function TaskList() {
-  const taskList: Task[] = await fetchTaskList();
+export default function TaskList() {
+  // このコンポーネントで状態管理する変数
+  const [taskList, setTaskList] = useState<Task[]>([]);
+
+  // 画面の初期表示で行う処理
+  const initialize = async () => {
+    await fetchTaskList().then((tasks) => setTaskList(tasks));
+  };
+
+  useEffect(() => {
+    initialize();
+  }, [taskList]);
 
   return (
     <div>
-      {taskList.map((task, index) => {
+      {taskList.map((task) => {
         return (
           <div
             className="card w-96 bg-base-100 shadow-xl"
-            key={"task-" + index}
+            key={"task-" + task.id}
           >
             <div className="card-body">
               <p>id: {task.id}</p>
